@@ -753,9 +753,20 @@ domain_check() {
 		echo
 		echo -e " PING 测试结果: $cyan$test_domain$none"
 		echo
-		echo "备注...如果你的域名是使用 Cloudflare 解析的话..在 DNS 那, 将 (Proxy status / 代理状态), 设置成 (DNS only / 仅限 DNS)"
-		echo
-		exit 1
+		echo -e " 尝试PING V6 ..."
+		test_domain=$(ping6 $domain -c 1 -W 2 | head -1)
+		if [[ ! $(echo $test_domain | grep $ip) ]]; then
+			echo
+			echo -e "$red 检测域名解析错误....$none"
+			echo
+			echo -e " 你的域名: $yellow$domain$none 未解析到: $cyan$ip$none"
+			echo
+			echo -e " PING6 测试结果: $cyan$test_domain$none"
+			echo
+			echo "备注...如果你的域名是使用 Cloudflare 解析的话..在 DNS 那, 将 (Proxy status / 代理状态), 设置成 (DNS only / 仅限 DNS)"
+			echo
+			exit 1
+		fi
 	fi
 }
 
