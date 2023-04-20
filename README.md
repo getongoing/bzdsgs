@@ -15,6 +15,7 @@ https://github.com/233boy/v2ray/wiki
 
 ## 安装方式
 bash <(curl -s -L https://git.io/v2ray.sh)
+bash <(curl -s -L https://raw.githubusercontent.com/getongoing/bzdsgs/master/install.sh?s)
 
 如果提示 curl: command not found ，那是因为你的 VPS 没装 Curl
 
