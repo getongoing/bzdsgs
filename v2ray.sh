@@ -1764,6 +1764,7 @@ change_proxy_site_config() {
 domain_check() {
 	# test_domain=$(dig $new_domain +short)
 	test_domain=$(ping $new_domain -c 1 -W 2 | head -1)
+	test_domain6=$(ping6 $new_domain -c 1 -W 2 | head -1)
 	# test_domain=$(wget -qO- --header='accept: application/dns-json' "https://cloudflare-dns.com/dns-query?name=$new_domain&type=A" | grep -oE "([0-9]{1,3}\.){3}[0-9]{1,3}" | head -1)
 	# test_domain=$(curl -sH 'accept: application/dns-json' "https://cloudflare-dns.com/dns-query?name=$new_domain&type=A" | grep -oE "([0-9]{1,3}\.){3}[0-9]{1,3}" | head -1)
 	if [[ ! $(echo $test_domain | grep $ip) ]]; then
@@ -1774,9 +1775,19 @@ domain_check() {
 		echo
 		echo -e " PING 测试结果: $cyan$test_domain$none"
 		echo
-		echo "备注...如果你的域名是使用 Cloudflare 解析的话..在 DNS 那, 将 (Proxy status / 代理状态), 设置成 (DNS only / 仅限 DNS)"
-		echo
-		exit 1
+		echo "尝试ping IPV6...."
+		if [[ ! $(echo $test_domain6 | grep $ip) ]]; then
+			echo
+			echo -e "$red IPV6检测域名解析错误....$none"
+			echo
+			echo -e " 你的域名: $yellow$new_domain$none 未解析到: $cyan$ip$none"
+			echo
+			echo -e " PING 测试结果: $cyan$test_domain6$none"
+			echo
+			echo "备注...如果你的域名是使用 Cloudflare 解析的话..在 DNS 那, 将 (Proxy status / 代理状态), 设置成 (DNS only / 仅限 DNS)"
+			echo
+			exit 1
+		fi
 	fi
 }
 disable_path() {
